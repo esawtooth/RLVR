@@ -88,7 +88,7 @@ class GSM8K:
             input_text = self.few_shot_prompt + input_text
             
         return {
-            'text': input_text,
+            'prompt': input_text,
             'final_answer': final_answer,
             'question': question, 
         }    

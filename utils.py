@@ -32,3 +32,14 @@ def reward_func(completions, final_answer, **kwargs):
             rewards.append(0.0)
             
     return rewards
+
+
+def print_trainable_parameters(model):
+    trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
+    all_params = sum(p.numel() for p in model.parameters())
+    print(f"Trainable parameters: {trainable_params}")
+    print(f"All parameters: {all_params}")
+    print(f"Percentage of trainable parameters: {100 * trainable_params / all_params:.2f}%")
+
+    
+    

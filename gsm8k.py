@@ -56,14 +56,8 @@ class GSM8K:
         return example  
     
     def process_example(self, example, index):
-        # Set seed based on self.seed and index for reproducibility
-        if self.seed is not None:
-            random.seed(self.seed + index)
-
-        # Always capture the original raw question
+        
         question = example['question']
-
-        # Rest of the original method remains the same
         answer = example['answer']
         
         # Extract the reasoning steps and the final answer
@@ -75,7 +69,7 @@ class GSM8K:
             reasoning = answer.strip()
             final_answer = ''
             
-        # Create the code solution
+        # Create the prompt
         if self.include_answer:
             if self.include_reasoning:
                 input_text = self.format_example(question, reasoning, final_answer)
@@ -100,14 +94,11 @@ class GSM8K:
         if self.few_shot:
             self.few_shot_prompt = self.build_prompt()
 
-        # Use with_indices=True to pass the index to the processing function
         dataset = dataset.map(self.process_example, with_indices=True, load_from_cache_file=False)
 
         return dataset
     
-    def fewshot_examples_qa(self):
-        """Loads and returns the few-shot examples for the task if they exist."""
-        
+    def fewshot_examples_qa(self):        
         return EXAMPLARS
 
     def make_prompts(self):
@@ -124,9 +115,7 @@ class GSM8K:
         
         if self.examples is None:
             self.make_prompts()
-        
-        random.seed(42)
-        
+                
         prompt = ""
         for qna in random.sample(self.examples, self.num_shots):
             prompt += self.format_example(qna['question'], qna['cot_answer'], qna['short_answer'])

@@ -22,7 +22,7 @@ To adapt and refine base models for better mathematical reasoning and structured
 
 ### Results
 
-This section summarizes the performance improvements achieved by fine-tuning the `Qwen/Qwen2.5-Math-1.5B` model using Reinforcement Learning with Value Regularization (RLVR) and Gradient-Reweighted Policy Optimization (GRPO) on the GSM8K benchmark.
+This section summarizes the performance improvements achieved by RL fine-tuning the `Qwen/Qwen2.5-Math-1.5B` model using RLVR and GRPO on the GSM8K benchmark.
 
 ![plot](./plots/RLVR-GSM8K-Plots.png)
 

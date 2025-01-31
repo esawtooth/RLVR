@@ -19,3 +19,37 @@ This repository explores applying the Reinforcement Learning from Verifiable Rew
 ### Goal:
 
 To adapt and refine base models for better mathematical reasoning and structured output through RLVR, using only GSM8K data and few-shot prompting.
+
+### Results
+
+This section summarizes the performance improvements achieved by fine-tuning the `Qwen/Qwen2.5-Math-1.5B` model using Reinforcement Learning with Value Regularization (RLVR) and Gradient-Reweighted Policy Optimization (GRPO) on the GSM8K benchmark.
+
+![plot](./plots/RLVR-GSM8K-Plots.png)
+
+**Performance Summary:**
+
+| Metric               | Baseline (Paper) | Baseline (Mine) | After RLVR+GRPO | Improvement |
+|-----------------------|------------------|-----------------|-----------------|-------------|
+| GSM8K 8-shot Accuracy| 76.8             | 70.66           | 77.33           | +6.67       |
+
+**Key Details:**
+
+*   The model was fine-tuned for two epochs using a reward function that incorporates:
+    *   **Correctness:** 1 for correct answers, 0 for incorrect.
+    *   **Formatting:** 0.5 for properly formatted answers, 0 otherwise.
+*   "Baseline (Mine)" refers to the model's performance on my implementation *before* RL fine-tuning.
+
+### Implementation Notes and Considerations
+
+This section outlines key details regarding my implementation and potential factors influencing the reported results.
+
+*   **Resource Constraints:** Due to a 24GB VRAM limitation, I had to restrict:
+    *   **Completion Length:** The maximum generated sequence length during RL fine-tuning was capped at 300 tokens.
+    *   **Few-Shot Examples:**  During RL fine-tuning, I limited the number of few-shot examples to two and tokens to 256.
+    *  **Impact:** These limitations may affect the model's ability to solve more complex problems requiring longer explanations. I believe that removing these constraints could lead to a further improvement in results.
+*   **Dataset Ordering Bias:**  There is an observed trend within the GSM8K dataset where early samples may be more challenging. Therefore, without shuffling the dataset, the reported reward increase plots may appear overly optimistic due to learning on harder examples earlier in training. Be cautious when interpreting results if the dataset is not shuffled.
+
+### Future Work
+
+- [ ] Evaluate RL fine-tuning on `Qwen/Qwen2.5-0.5B` to assess scalability.
+- [ ] Extend fine-tuning to models generating code with Python interpreter execution on GSM8K.

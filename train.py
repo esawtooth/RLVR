@@ -1,10 +1,8 @@
-import re
 import torch
-from datasets import load_dataset, Dataset
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from peft import LoraConfig, get_peft_model
 from trl import GRPOConfig, GRPOTrainer
-from utils import format_reward_func, reward_func, print_trainable_parameters
+from utils import format_reward_func, correctness_reward_func, print_trainable_parameters
 from gsm8k import GSM8K
 
 
@@ -64,7 +62,7 @@ trainer = GRPOTrainer(
     processing_class=tokenizer,
     reward_funcs=[
         format_reward_func,
-        reward_func
+        correctness_reward_func
         ],
     args=training_args,
     train_dataset=dataset,

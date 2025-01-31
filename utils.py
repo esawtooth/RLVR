@@ -1,18 +1,15 @@
 import re
 
 def format_reward_func(completions, **kwargs):
-    """Reward function that checks if the completion has a specific format."""
-    # Adjusted pattern to allow matching anywhere in the string
     pattern = r"\n#### The final answer is \d+"    
     completion_contents = [completion for completion in completions]    
     matches = [re.search(pattern, content) for content in completion_contents]
     return [0.5 if match else 0.0 for match in matches]
 
-def reward_func(completions, final_answer, **kwargs):
-    completion_contents = [completion for completion in completions]    
+def correctness_reward_func(completions, final_answer, **kwargs):
     rewards = []
     
-    for completion, ground_truth in zip(completion_contents, final_answer) :
+    for completion, ground_truth in zip(completions, final_answer) :
         try:
             match = re.search(r'####.*?([\d,]+(?:\.\d+)?)', completion)
             if match:
@@ -40,6 +37,3 @@ def print_trainable_parameters(model):
     print(f"Trainable parameters: {trainable_params}")
     print(f"All parameters: {all_params}")
     print(f"Percentage of trainable parameters: {100 * trainable_params / all_params:.2f}%")
-
-    
-    

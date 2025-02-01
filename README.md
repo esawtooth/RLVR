@@ -26,11 +26,22 @@ This section summarizes the performance improvements achieved by RL fine-tuning 
 
 ![plot](./plots/RLVR-GSM8K-Plots.png)
 
-**Performance Summary:**
+**Performance Summary (8-shots Evaluation): **
+
+`Qwen/Qwen2.5-Math-1.5B`:
 
 | Metric               | Baseline (Paper) | Baseline (Mine) | After RLVR+GRPO | Improvement |
 |-----------------------|------------------|-----------------|-----------------|-------------|
 | GSM8K 8-shot Accuracy| 76.8             | 70.66           | 77.33           | +6.67       |
+
+`Qwen/Qwen2.5-0.5B`:
+
+| Metric               | Baseline (Paper) | Baseline (Mine) | After RLVR+GRPO | Improvement |
+|-----------------------|------------------|-----------------|-----------------|-------------|
+| GSM8K 8-shot Accuracy| 41.6             | 32.60           | 46.10           | +13.5       |
+
+> **Note:** While these results are impressive, I think a fairer comparison would be to do SFT on GSM8K  on top of both the base model and RL fine-tuned version and evaluate the models in a zero-shot approach.
+
 
 **Key Details:**
 
@@ -51,5 +62,5 @@ This section outlines key details regarding my implementation and potential fact
 
 ### Future Work
 
-- [ ] Evaluate RL fine-tuning on `Qwen/Qwen2.5-0.5B` to assess scalability.
+- [x] Evaluate RL fine-tuning on `Qwen/Qwen2.5-0.5B` to assess scalability.
 - [ ] Extend fine-tuning to models generating code with Python interpreter execution on GSM8K.

@@ -31,7 +31,7 @@ class GSM8K:
             example = f"Question: {question}\nSolution: "
             
             if self.cot:
-                example += "Let's break it down step by step. "
+                example += "Let's think step by step. "
             
             # example += '\n'
             

@@ -26,7 +26,7 @@ This section summarizes the performance improvements achieved by RL fine-tuning 
 
 ![plot](./plots/RLVR-GSM8K-Plots.png)
 
-**Performance Summary (8-shots Evaluation): **
+**Performance Summary (8-shots Evaluation):**
 
 `Qwen/Qwen2.5-Math-1.5B`:
 
@@ -42,6 +42,9 @@ This section summarizes the performance improvements achieved by RL fine-tuning 
 
 > **Note:** While these results are impressive, I think a fairer comparison would be to do SFT on GSM8K  on top of both the base model and RL fine-tuned version and evaluate the models in a zero-shot approach.
 
+> **Note:** I also tried Baseline+SFT with a language-modeling loss function on completions, but I consistently observed worse performance compared to few-shot settings on Baseline. However, Baseline+RLVR performed well even with a 1-shot example. The only scenario where SFT outperformed RLVR was in the zero-shot setting, where RLVR achieved 0.00% due to improper formatting.
+
+One interesting observation arose from an error in passing arguments. I noticed that loading the LoRA adapter trained on `Qwen/Qwen2.5-Math-1.5B` also improved the performance of `Qwen/Qwen2.5-1.5B` on GSM8K, increasing the score from 58.23% to 64.82%.
 
 **Key Details:**
 

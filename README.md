@@ -1,5 +1,7 @@
 ## GSM8K-RLVR: Reinforcement Learning from Verifiable Rewards for Base Models
 
+![banner](./plots/rlvr-banner.png)
+
 This repository explores applying the Reinforcement Learning from Verifiable Rewards (RLVR) concept, as proposed in the Tulu3 paper ("Pushing Frontiers in Open Language Model Post-Training") and inspired by DeepSeek R1, to enhance the performance of base language models on the GSM8K math problem-solving dataset.
 
 ### Key Features:

@@ -66,4 +66,5 @@ This section outlines key details regarding my implementation and potential fact
 ### Future Work
 
 - [x] Evaluate RL fine-tuning on `Qwen/Qwen2.5-0.5B` to assess scalability.
-- [ ] Extend fine-tuning to models generating code with Python interpreter execution on GSM8K.
+- [x] Extend fine-tuning to models generating code with Python interpreter execution on GSM8K.
+- [ ] Share models on HuggingFace.

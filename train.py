@@ -1,19 +1,31 @@
+import argparse
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from peft import LoraConfig, get_peft_model
 from trl import GRPOConfig, GRPOTrainer
-from utils import format_reward_func, correctness_reward_func, print_trainable_parameters
+from utils import format_reward_func_qa, correctness_reward_func_qa, \
+                  format_reward_func_code, correctness_reward_func_code, \
+                  print_trainable_parameters
 from gsm8k import GSM8K
 
+def parse_args():
+    parser = argparse.ArgumentParser(description="Fine-tune a model for Reasoning on GSM8K with RLVR and GRPO.")
+    parser.add_argument('--format', type=str, default='qa', choices=['qa', 'code'])
+    parser.add_argument('--num_shots', type=int, default=2)
+    parser.add_argument('--model_name', type=str, default='Qwen/Qwen2.5-Math-1.5B')
+    return parser.parse_args()
 
-dataset = GSM8K(split='train', include_answer=False, include_reasoning=True, few_shot=True, num_shots=2, seed=None, cot=True, template="qa").dataset.shuffle(seed=42)
+args = parse_args()
+print(args)
 
-model_name = "Qwen/Qwen2.5-Math-1.5B"
-output_dir = f'outputs/GRPO/{model_name}'
+dataset = GSM8K(split='train', include_answer=False, include_reasoning=True, few_shot=True, num_shots=args.num_shots, seed=None, cot=True, template=args.format).dataset.shuffle(seed=42)
+
+model_name = args.model_name
+output_dir = f'outputs/GRPO/{args.format}/{model_name}'
 
 training_args = GRPOConfig(
     output_dir=output_dir,
-    run_name=f'GRPO-GSM8K-{model_name.split('/')[-1]}',
+    run_name=f'GRPO-GSM8K-{args.format}-{model_name.split('/')[-1]}',
     learning_rate=2e-5,
     logging_steps=1,
     bf16=True,
@@ -57,13 +69,17 @@ tokenizer = AutoTokenizer.from_pretrained(model_name)
 tokenizer.pad_token = tokenizer.eos_token
 model.config.pad_token_id = tokenizer.pad_token_id
 
+rewards_funcs = []
+
+if args.format == 'qa':
+    rewards_funcs = [format_reward_func_qa, correctness_reward_func_qa]
+elif args.format == 'code':
+    rewards_funcs = [format_reward_func_code, correctness_reward_func_code]
+
 trainer = GRPOTrainer(
     model=model,
     processing_class=tokenizer,
-    reward_funcs=[
-        format_reward_func,
-        correctness_reward_func
-        ],
+    reward_funcs=rewards_funcs,
     args=training_args,
     train_dataset=dataset,
 )

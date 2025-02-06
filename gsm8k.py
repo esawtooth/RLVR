@@ -1,11 +1,9 @@
 # gsm8k.py
 
-import logging
 import random
+import json
 from resources import EXAMPLARS
 from datasets import load_dataset
-
-logger = logging.getLogger(__name__)
 
 class GSM8K:
     def __init__(self, split, include_answer=True, include_reasoning=True, few_shot=False, num_shots=8, seed=None, cot=False, template="qa"):
@@ -32,9 +30,7 @@ class GSM8K:
             
             if self.cot:
                 example += "Let's think step by step. "
-            
-            # example += '\n'
-            
+                        
             if solution is not None:
                 def remove_placeholders(text):
                     import re
@@ -49,7 +45,13 @@ class GSM8K:
             example = example.replace('..', '.')
             
             if answer is not None:
-                example += f"#### The final answer is {answer}\n\n"   
+                example += f"#### The final answer is {answer}\n\n"
+                
+        elif self.template == 'code':
+            example = f'Question: {question}\n\n# solution in Python:\n\ndef solution():\n    """{question}"""\n'
+            
+            if solution is not None:
+                example += f'{solution}\n\n'
         else:
             raise ValueError('Format Not Implemented')
         
@@ -98,6 +100,28 @@ class GSM8K:
 
         return dataset
     
+    
+    def fewshot_examples_code(self):
+        """Loads and returns the few-shot examples for the task if they exist."""
+        with open(
+            "resources/gsm8k_few_shot_prompts.json",
+            "r",
+        ) as file:
+            examples = json.load(file)
+        
+        new_examples = []
+        for question, solution in zip(
+            examples["questions"][:self.num_shots], examples["solutions"][:self.num_shots]
+        ):
+           new_examples.append(dict(
+                question=question,
+                cot_answer=solution,
+                short_answer=None
+            ))
+
+            
+        return new_examples
+    
     def fewshot_examples_qa(self):        
         return EXAMPLARS
 
@@ -106,6 +130,8 @@ class GSM8K:
 
         if self.template == 'qa':
             examples = self.fewshot_examples_qa()
+        elif self.template == 'code':
+            examples = self.fewshot_examples_code()
         else:
             raise ValueError('Format Not Implemented')
     
